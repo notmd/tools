@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ConfigurationError","Series of errors that can be thrown while computing the configuration"]],"struct":[["Configuration","The configuration that is contained inside the file `rome.json`"]]});

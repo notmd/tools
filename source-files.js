@@ -1,0 +1,16 @@
+var sourcesIndex = {};
+sourcesIndex["rome"] = {"name":"","files":["rome.rs"]};
+sourcesIndex["rome_analyze"] = {"name":"","files":["categories.rs","context.rs","lib.rs","matcher.rs","query.rs","registry.rs","rule.rs","services.rs","signals.rs","syntax.rs","visitor.rs"]};
+sourcesIndex["rome_cli"] = {"name":"","dirs":[{"name":"commands","files":["check.rs","ci.rs","format.rs","help.rs","mod.rs"]}],"files":["lib.rs","metrics.rs","panic.rs","termination.rs","traversal.rs"]};
+sourcesIndex["rome_console"] = {"name":"","dirs":[{"name":"codespan","files":["mod.rs","render.rs"]},{"name":"write","files":["html.rs","termcolor.rs"]}],"files":["diff.rs","fmt.rs","lib.rs","markup.rs","write.rs"]};
+sourcesIndex["rome_control_flow"] = {"name":"","files":["builder.rs","lib.rs"]};
+sourcesIndex["rome_css_factory"] = {"name":"","dirs":[{"name":"generated","files":["node_factory.rs","syntax_factory.rs"]}],"files":["generated.rs","lib.rs"]};
+sourcesIndex["rome_css_syntax"] = {"name":"","dirs":[{"name":"generated","files":["kind.rs","macros.rs","nodes.rs","nodes_mut.rs"]}],"files":["generated.rs","lib.rs","syntax_node.rs"]};
+sourcesIndex["rome_diagnostics"] = {"name":"","files":["diagnostic.rs","emit.rs","file.rs","lib.rs","suggestion.rs"]};
+sourcesIndex["rome_formatter"] = {"name":"","dirs":[{"name":"printer","dirs":[{"name":"printer_options","files":["mod.rs"]}],"files":["mod.rs"]}],"files":["arguments.rs","buffer.rs","builders.rs","comments.rs","format_element.rs","format_extensions.rs","formatter.rs","group_id.rs","intersperse.rs","lib.rs","macros.rs","prelude.rs","printed_tokens.rs","token.rs"]};
+sourcesIndex["rome_js_factory"] = {"name":"","dirs":[{"name":"generated","files":["node_factory.rs","syntax_factory.rs"]}],"files":["generated.rs","lib.rs","make.rs"]};
+sourcesIndex["rome_js_syntax"] = {"name":"","dirs":[{"name":"generated","files":["kind.rs","macros.rs","nodes.rs","nodes_mut.rs"]}],"files":["expr_ext.rs","generated.rs","lib.rs","modifier_ext.rs","numbers.rs","source_type.rs","stmt_ext.rs","suppression.rs","syntax_node.rs","union_ext.rs"]};
+sourcesIndex["rome_json_factory"] = {"name":"","dirs":[{"name":"generated","files":["node_factory.rs","syntax_factory.rs"]}],"files":["generated.rs","lib.rs"]};
+sourcesIndex["rome_json_syntax"] = {"name":"","dirs":[{"name":"generated","files":["kind.rs","macros.rs","nodes.rs"]}],"files":["generated.rs","lib.rs","syntax_node.rs"]};
+sourcesIndex["rome_service"] = {"name":"","dirs":[{"name":"configuration","files":["formatter.rs","javascript.rs","mod.rs"]},{"name":"file_handlers","files":["javascript.rs","json.rs","mod.rs","unknown.rs"]},{"name":"workspace","files":["server.rs"]}],"files":["lib.rs","load_config.rs","settings.rs","workspace.rs"]};
+createSourceSidebar();

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["FormatSettings","Formatter settings for the entire workspace"],["LanguageSettings",""],["LanguagesSettings","Static map of language names to language-specific settings"],["WorkspaceSettings","Global settings for the entire workspace"]],"trait":[["Language",""]]});

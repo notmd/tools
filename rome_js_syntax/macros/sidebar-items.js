@@ -1,0 +1,1 @@
+initSidebarItems({"macro":[["map_syntax_node","Reconstruct an AstNode from a SyntaxNode"]]});
