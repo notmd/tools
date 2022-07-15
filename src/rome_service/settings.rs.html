@@ -122,6 +122,8 @@
 <span id="117">117</span>
 <span id="118">118</span>
 <span id="119">119</span>
+<span id="120">120</span>
+<span id="121">121</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">RwLock</span>, <span class="ident">RwLockReadGuard</span>};
 
 <span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">IndentStyle</span>, <span class="ident">LineWidth</span>};
@@ -129,7 +131,7 @@
 <span class="kw">use</span> <span class="ident">rome_js_syntax::JsLanguage</span>;
 
 <span class="doccomment">/// Global settings for the entire workspace</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WorkspaceSettings</span> {
     <span class="doccomment">/// Formatter settings applied to all files in the workspaces</span>
     <span class="kw">pub</span> <span class="ident">format</span>: <span class="ident">FormatSettings</span>,
@@ -140,6 +142,7 @@
 }
 
 <span class="doccomment">/// Formatter settings for the entire workspace</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatSettings</span> {
     <span class="doccomment">/// Enabled by default</span>
     <span class="kw">pub</span> <span class="ident">enabled</span>: <span class="ident">bool</span>,
@@ -162,6 +165,7 @@
 }
 
 <span class="doccomment">/// Formatter settings for the entire workspace</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LinterSettings</span> {
     <span class="doccomment">/// Enabled by default</span>
     <span class="kw">pub</span> <span class="ident">enabled</span>: <span class="ident">bool</span>,
@@ -174,7 +178,7 @@
 }
 
 <span class="doccomment">/// Static map of language names to language-specific settings</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LanguagesSettings</span> {
     <span class="kw">pub</span> <span class="ident">javascript</span>: <span class="ident">LanguageSettings</span><span class="op">&lt;</span><span class="ident">JsLanguage</span><span class="op">&gt;</span>,
 }
@@ -198,7 +202,7 @@
     ) -&gt; <span class="ident"><span class="self">Self</span>::FormatContext</span>;
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LanguageSettings</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Formatter settings for this language</span>
     <span class="kw">pub</span> <span class="ident">format</span>: <span class="ident">L::FormatSettings</span>,
