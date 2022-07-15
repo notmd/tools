@@ -31,16 +31,14 @@
 <span id="26">26</span>
 <span id="27">27</span>
 <span id="28">28</span>
-<span id="29">29</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::commands::check::parse_linter_options</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">traversal</span>::{<span class="ident">traverse</span>, <span class="ident">TraversalMode</span>},
     <span class="ident">CliSession</span>, <span class="ident">Termination</span>,
 };
-<span class="kw">use</span> <span class="ident">rome_service::load_config</span>;
-<span class="kw">use</span> <span class="ident">rome_service::load_config::ConfigurationType</span>;
 <span class="kw">use</span> <span class="ident">rome_service::settings::WorkspaceSettings</span>;
 <span class="kw">use</span> <span class="ident">rome_service::workspace::UpdateSettingsParams</span>;
+<span class="kw">use</span> <span class="ident">rome_service</span>::{<span class="ident">load_config</span>, <span class="ident">ConfigurationType</span>};
 
 <span class="kw">use</span> <span class="ident"><span class="kw">super</span>::format::parse_format_options</span>;
 

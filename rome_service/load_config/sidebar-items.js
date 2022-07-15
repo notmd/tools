@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["ConfigurationType","The type of configuration we want to load"]],"fn":[["load_config","This function is responsible to load the rome configuration."]]});

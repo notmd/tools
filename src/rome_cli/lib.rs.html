@@ -87,6 +87,8 @@
 <span id="82">82</span>
 <span id="83">83</span>
 <span id="84">84</span>
+<span id="85">85</span>
+<span id="86">86</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">pico_args::Arguments</span>;
 <span class="kw">use</span> <span class="ident">rome_flags::FeatureFlags</span>;
 <span class="kw">use</span> <span class="ident">rome_service::App</span>;
@@ -156,6 +158,8 @@
             <span class="ident"><span class="kw">crate</span>::commands::help::help</span>(<span class="ident">session</span>, <span class="prelude-val">Some</span>(<span class="ident">cmd</span>))<span class="question-mark">?</span>;
             <span class="prelude-val">Err</span>(<span class="ident">Termination::EmptyArguments</span>)
         }
+
+        <span class="prelude-val">Some</span>(<span class="string">&quot;init&quot;</span>) =&gt; <span class="ident"><span class="kw">crate</span>::commands::init::init</span>(<span class="ident">session</span>),
 
         <span class="comment">// Print the general help if no subcommand was specified / the subcommand is `help`</span>
         <span class="prelude-val">None</span> <span class="op">|</span> <span class="prelude-val">Some</span>(<span class="string">&quot;help&quot;</span>) =&gt; <span class="ident"><span class="kw">crate</span>::commands::help::help</span>(<span class="ident">session</span>, <span class="prelude-val">None</span>),

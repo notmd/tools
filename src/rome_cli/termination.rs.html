@@ -151,7 +151,7 @@
 <span class="comment">// Termination implements Debug by redirecting to Display instead of deriving</span>
 <span class="comment">// a &quot;canonical&quot; debug implementation as it it is returned as a Result in the</span>
 <span class="comment">// main function and gets printed by the standard library, which uses Debug but</span>
-<span class="comment">// we want to show the actuall error message to the user in case of an error</span>
+<span class="comment">// we want to show the actual error message to the user in case of an error</span>
 <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Termination</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
         <span class="macro">write!</span>(<span class="ident">fmt</span>, <span class="string">&quot;{}&quot;</span>, <span class="self">self</span>)

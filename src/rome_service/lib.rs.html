@@ -173,14 +173,7 @@
 <span id="168">168</span>
 <span id="169">169</span>
 <span id="170">170</span>
-<span id="171">171</span>
-<span id="172">172</span>
-<span id="173">173</span>
-<span id="174">174</span>
-<span id="175">175</span>
-<span id="176">176</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::configuration::ConfigurationError</span>;
-<span class="kw">use</span> <span class="ident">rome_console</span>::{<span class="ident">Console</span>, <span class="ident">EnvConsole</span>};
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">rome_console</span>::{<span class="ident">Console</span>, <span class="ident">EnvConsole</span>};
 <span class="kw">use</span> <span class="ident">rome_formatter::FormatError</span>;
 <span class="kw">use</span> <span class="ident">rome_fs</span>::{<span class="ident">FileSystem</span>, <span class="ident">OsFileSystem</span>, <span class="ident">RomePath</span>};
 <span class="kw">use</span> <span class="ident">std::error::Error</span>;
@@ -190,12 +183,13 @@
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">configuration</span>;
 <span class="kw">mod</span> <span class="ident">file_handlers</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">load_config</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">settings</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">workspace</span>;
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::configuration</span>::{
+    <span class="ident">create_config</span>, <span class="ident">load_config</span>, <span class="ident">Configuration</span>, <span class="ident">ConfigurationError</span>, <span class="ident">ConfigurationType</span>,
+};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::file_handlers::JsFormatSettings</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::load_config::load_config</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::workspace::Workspace</span>;
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">App</span><span class="op">&lt;</span><span class="lifetime">&#39;app</span><span class="op">&gt;</span> {
@@ -207,6 +201,8 @@
 
 <span class="doccomment">/// Generic errors thrown during rome operations</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">RomeError</span> {
+    <span class="doccomment">/// The project contains uncommitted changes</span>
+    <span class="ident">DirtyWorkspace</span>,
     <span class="doccomment">/// The file does not exist in the [Workspace]</span>
     <span class="ident">NotFound</span>,
     <span class="doccomment">/// A file is not supported. It contains the extension of the file</span>
@@ -220,13 +216,9 @@
     <span class="ident">CantReadDirectory</span>(<span class="ident">PathBuf</span>),
     <span class="doccomment">/// Thrown when a rome can&#39;t read a generic file</span>
     <span class="ident">CantReadFile</span>(<span class="ident">PathBuf</span>),
-    <span class="doccomment">/// Error thrown when de-serialising the configuration from file, the issues can be many:</span>
-    <span class="doccomment">/// - syntax error</span>
-    <span class="doccomment">/// - incorrect fields</span>
-    <span class="doccomment">/// - incorrect values</span>
-    <span class="ident">MalformedConfigurationFile</span>(<span class="ident">String</span>),
+
     <span class="doccomment">/// Error thrown when validating the configuration. Once deserialized, further checks have to be done.</span>
-    <span class="ident">InvalidConfiguration</span>(<span class="ident">ConfigurationError</span>),
+    <span class="ident">Configuration</span>(<span class="ident">ConfigurationError</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">RomeError</span> {
@@ -238,8 +230,8 @@
             <span class="ident">RomeError::FormatWithErrorsDisabled</span> =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
             <span class="ident">RomeError::CantReadDirectory</span>(<span class="kw">_</span>) =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
             <span class="ident">RomeError::CantReadFile</span>(<span class="kw">_</span>) =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
-            <span class="ident">RomeError::MalformedConfigurationFile</span>(<span class="kw">_</span>) =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
-            <span class="ident">RomeError::InvalidConfiguration</span>(<span class="kw">_</span>) =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
+            <span class="ident">RomeError::Configuration</span>(<span class="kw">_</span>) =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
+            <span class="ident">RomeError::DirtyWorkspace</span> =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
         }
     }
 }
@@ -282,15 +274,11 @@
                     <span class="ident">path</span>.<span class="ident">display</span>()
                 )
             }
-            <span class="ident">RomeError::MalformedConfigurationFile</span>(<span class="ident">reason</span>) =&gt; {
-                <span class="macro">write!</span>(
-                    <span class="ident">f</span>,
-                    <span class="string">&quot;Rome couldn&#39;t load the configuration file, here&#39;s why: \n{}&quot;</span>,
-                    <span class="ident">reason</span>
-                )
-            }
 
-            <span class="ident">RomeError::InvalidConfiguration</span>(<span class="ident">error</span>) =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="ident">error</span>, <span class="ident">f</span>),
+            <span class="ident">RomeError::Configuration</span>(<span class="ident">error</span>) =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="ident">error</span>, <span class="ident">f</span>),
+            <span class="ident">RomeError::DirtyWorkspace</span> =&gt; {
+                <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Uncommitted changes in repository&quot;</span>)
+            }
         }
     }
 }
