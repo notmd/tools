@@ -76,6 +76,7 @@
 <span id="71">71</span>
 <span id="72">72</span>
 <span id="73">73</span>
+<span id="74">74</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::settings::FormatSettings</span>;
 <span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">IndentStyle</span>, <span class="ident">LineWidth</span>};
 <span class="kw">use</span> <span class="ident">serde::Deserialize</span>;
@@ -120,6 +121,7 @@
             <span class="ident">PlainIndentStyle::Space</span> =&gt; <span class="ident">IndentStyle::Space</span>(<span class="ident">conf</span>.<span class="ident">indent_size</span>),
         };
         <span class="self">Self</span> {
+            <span class="ident">enabled</span>: <span class="ident">conf</span>.<span class="ident">enabled</span>,
             <span class="ident">indent_style</span>: <span class="prelude-val">Some</span>(<span class="ident">indent_style</span>),
             <span class="ident">line_width</span>: <span class="prelude-val">Some</span>(<span class="ident">conf</span>.<span class="ident">line_width</span>),
             <span class="ident">format_with_errors</span>: <span class="bool-val">false</span>,

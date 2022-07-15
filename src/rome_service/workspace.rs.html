@@ -291,6 +291,8 @@
 <span id="286">286</span>
 <span id="287">287</span>
 <span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
 </pre><pre class="rust"><code><span class="doccomment">//! The [Workspace] is the main entry point for high-level clients (the Rome</span>
 <span class="doccomment">//! CLI and Language Server) into the various language-specific services of the</span>
 <span class="doccomment">//! Rome toolchain (parser, formatter, analyzer ...)</span>
@@ -431,7 +433,9 @@
 }
 
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Workspace</span>: <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">RefUnwindSafe</span> {
-    <span class="doccomment">/// Checks whether a certain feature is supported for a file at a given path</span>
+    <span class="doccomment">/// Checks whether a certain feature is supported. There are different conditions:</span>
+    <span class="doccomment">/// - Rome doesn&#39;t recognize a file, so it can provide the feature;</span>
+    <span class="doccomment">/// - the feature is disabled inside the configuration;</span>
     <span class="kw">fn</span> <span class="ident">supports_feature</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">params</span>: <span class="ident">SupportsFeatureParams</span>) -&gt; <span class="ident">bool</span>;
 
     <span class="doccomment">/// Update the global settings for this workspace</span>

@@ -96,6 +96,32 @@
 <span id="91">91</span>
 <span id="92">92</span>
 <span id="93">93</span>
+<span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
+<span id="99">99</span>
+<span id="100">100</span>
+<span id="101">101</span>
+<span id="102">102</span>
+<span id="103">103</span>
+<span id="104">104</span>
+<span id="105">105</span>
+<span id="106">106</span>
+<span id="107">107</span>
+<span id="108">108</span>
+<span id="109">109</span>
+<span id="110">110</span>
+<span id="111">111</span>
+<span id="112">112</span>
+<span id="113">113</span>
+<span id="114">114</span>
+<span id="115">115</span>
+<span id="116">116</span>
+<span id="117">117</span>
+<span id="118">118</span>
+<span id="119">119</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">RwLock</span>, <span class="ident">RwLockReadGuard</span>};
 
 <span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">IndentStyle</span>, <span class="ident">LineWidth</span>};
@@ -107,18 +133,44 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">WorkspaceSettings</span> {
     <span class="doccomment">/// Formatter settings applied to all files in the workspaces</span>
     <span class="kw">pub</span> <span class="ident">format</span>: <span class="ident">FormatSettings</span>,
+    <span class="doccomment">/// Linter settings applied to all files in the workspace</span>
+    <span class="kw">pub</span> <span class="ident">linter</span>: <span class="ident">LinterSettings</span>,
     <span class="doccomment">/// Language specific settings</span>
     <span class="kw">pub</span> <span class="ident">languages</span>: <span class="ident">LanguagesSettings</span>,
 }
 
 <span class="doccomment">/// Formatter settings for the entire workspace</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Default</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatSettings</span> {
+    <span class="doccomment">/// Enabled by default</span>
+    <span class="kw">pub</span> <span class="ident">enabled</span>: <span class="ident">bool</span>,
     <span class="doccomment">/// Stores whether formatting should be allowed to proceed if a given file</span>
     <span class="doccomment">/// has syntax errors</span>
     <span class="kw">pub</span> <span class="ident">format_with_errors</span>: <span class="ident">bool</span>,
     <span class="kw">pub</span> <span class="ident">indent_style</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">IndentStyle</span><span class="op">&gt;</span>,
     <span class="kw">pub</span> <span class="ident">line_width</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">LineWidth</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">FormatSettings</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> {
+            <span class="ident">enabled</span>: <span class="bool-val">true</span>,
+            <span class="ident">format_with_errors</span>: <span class="bool-val">false</span>,
+            <span class="ident">indent_style</span>: <span class="prelude-val">Some</span>(<span class="ident">IndentStyle::default</span>()),
+            <span class="ident">line_width</span>: <span class="prelude-val">Some</span>(<span class="ident">LineWidth::default</span>()),
+        }
+    }
+}
+
+<span class="doccomment">/// Formatter settings for the entire workspace</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LinterSettings</span> {
+    <span class="doccomment">/// Enabled by default</span>
+    <span class="kw">pub</span> <span class="ident">enabled</span>: <span class="ident">bool</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">LinterSettings</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">enabled</span>: <span class="bool-val">true</span> }
+    }
 }
 
 <span class="doccomment">/// Static map of language names to language-specific settings</span>
