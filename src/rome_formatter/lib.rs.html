@@ -1334,8 +1334,6 @@
 <span id="1329">1329</span>
 <span id="1330">1330</span>
 <span id="1331">1331</span>
-<span id="1332">1332</span>
-<span id="1333">1333</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Infrastructure for code formatting</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This module defines [FormatElement], an IR to format code documents and provides a mean to print</span>
@@ -1385,8 +1383,8 @@
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::printer</span>::{<span class="ident">Printer</span>, <span class="ident">PrinterOptions</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">arguments</span>::{<span class="ident">Argument</span>, <span class="ident">Arguments</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">buffer</span>::{
-    <span class="ident">Buffer</span>, <span class="ident">BufferExtensions</span>, <span class="ident">BufferSnapshot</span>, <span class="ident">Inspect</span>, <span class="ident">IsLabelledBuffer</span>, <span class="ident">NullBuffer</span>,
-    <span class="ident">PreambleBuffer</span>, <span class="ident">VecBuffer</span>, <span class="ident">WillBreakBuffer</span>,
+    <span class="ident">Buffer</span>, <span class="ident">BufferExtensions</span>, <span class="ident">BufferSnapshot</span>, <span class="ident">HasLabelBuffer</span>, <span class="ident">Inspect</span>, <span class="ident">PreambleBuffer</span>, <span class="ident">VecBuffer</span>,
+    <span class="ident">WillBreakBuffer</span>,
 };
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">builders</span>::{
     <span class="ident">block_indent</span>, <span class="ident">comment</span>, <span class="ident">empty_line</span>, <span class="ident">get_lines_before</span>, <span class="ident">group_elements</span>, <span class="ident">hard_line_break</span>,
@@ -1403,8 +1401,6 @@
     <span class="ident">SyntaxToken</span>, <span class="ident">SyntaxTriviaPieceComments</span>, <span class="ident">TextRange</span>, <span class="ident">TextSize</span>, <span class="ident">TokenAtOffset</span>,
 };
 <span class="kw">use</span> <span class="ident">std::error::Error</span>;
-<span class="kw">use</span> <span class="ident">std::fmt</span>;
-<span class="kw">use</span> <span class="ident">std::fmt::Display</span>;
 <span class="kw">use</span> <span class="ident">std::num::ParseIntError</span>;
 <span class="kw">use</span> <span class="ident">std::str::FromStr</span>;
 
@@ -1511,8 +1507,8 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">Display</span> <span class="kw">for</span> <span class="ident">LineWidthFromIntError</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">fmt::Result</span> {
+<span class="kw">impl</span> <span class="ident">std::fmt::Display</span> <span class="kw">for</span> <span class="ident">LineWidthFromIntError</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
         <span class="macro">writeln!</span>(
             <span class="ident">f</span>,
             <span class="string">&quot;The line width exceeds the maximum value ({})&quot;</span>,
@@ -1682,7 +1678,7 @@
     <span class="ident">SyntaxError</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">FormatError</span> {
+<span class="kw">impl</span> <span class="ident">std::fmt::Display</span> <span class="kw">for</span> <span class="ident">FormatError</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">fmt</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) -&gt; <span class="ident">std::fmt::Result</span> {
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">FormatError::SyntaxError</span> =&gt; <span class="ident">fmt</span>.<span class="ident">write_str</span>(<span class="string">&quot;syntax error&quot;</span>),
@@ -2468,11 +2464,11 @@
     <span class="kw">pub</span> <span class="ident">printed_tokens</span>: <span class="ident">PrintedTokens</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span> <span class="ident">fmt::Debug</span> <span class="kw">for</span> <span class="ident">FormatState</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span> <span class="ident">std::fmt::Debug</span> <span class="kw">for</span> <span class="ident">FormatState</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span>
 <span class="kw">where</span>
-    <span class="ident">Context</span>: <span class="ident">fmt::Debug</span>,
+    <span class="ident">Context</span>: <span class="ident">std::fmt::Debug</span>,
 {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">fmt::Formatter</span>) -&gt; <span class="ident">fmt::Result</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;mut</span> <span class="ident">std::fmt::Formatter</span>) -&gt; <span class="ident">std::fmt::Result</span> {
         <span class="ident">f</span>.<span class="ident">debug_struct</span>(<span class="string">&quot;FormatState&quot;</span>)
             .<span class="ident">field</span>(<span class="string">&quot;context&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">context</span>)
             .<span class="ident">field</span>(
