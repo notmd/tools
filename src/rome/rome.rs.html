@@ -27,7 +27,15 @@
 <span id="22">22</span>
 <span id="23">23</span>
 <span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">rome_cli</span>::{<span class="ident">run_cli</span>, <span class="ident">setup_panic_handler</span>, <span class="ident">CliSession</span>, <span class="ident">Termination</span>};
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;windows&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">global_allocator</span>]</span>
+<span class="kw">static</span> <span class="ident">GLOBAL</span>: <span class="ident">mimalloc::MiMalloc</span> <span class="op">=</span> <span class="ident">mimalloc::MiMalloc</span>;
 
 <span class="doccomment">///</span>
 <span class="doccomment">/// To run this example, run:</span>
