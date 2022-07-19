@@ -4,8 +4,9 @@
     </nav>
     <nav class="sidebar"><a class="sidebar-logo" href="../rome_analyze/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div>
         </a><div class="sidebar-elems"><h2 class="location"><a href="index.html">In rome_analyze</a></h2><div id="sidebar-vars" data-name="declare_rule" data-ty="macro" data-relpath=""></div><script defer src="sidebar-items.js"></script></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../rome_analyze/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
-    <h1 class="fqn"><span class="in-band">Macro <a href="index.html">rome_analyze</a>::<wbr><a class="macro" href="#">declare_rule</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/rome_analyze/rule.rs.html#78-88">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><div class="docblock item-decl"><div class="example-wrap"><pre class="rust macro"><code><span class="macro">macro_rules!</span> <span class="ident">declare_rule</span> {
-    ( $( <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc</span>:<span class="ident">literal</span>]</span> )<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vis</span>:<span class="ident">vis</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">id</span>:<span class="ident">ident</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">literal</span> ) =&gt; { ... };
+    <h1 class="fqn"><span class="in-band">Macro <a href="index.html">rome_analyze</a>::<wbr><a class="macro" href="#">declare_rule</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/rome_analyze/rule.rs.html#115-138">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><div class="docblock item-decl"><div class="example-wrap"><pre class="rust macro"><code><span class="macro">macro_rules!</span> <span class="ident">declare_rule</span> {
+    ( $( <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc</span>:<span class="ident">literal</span>]</span> )<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vis</span>:<span class="ident">vis</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">id</span>:<span class="ident">ident</span> { <span class="ident">version</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">version</span>:<span class="ident">literal</span>, <span class="ident">name</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">literal</span> } ) =&gt; { ... };
+    ( $( <span class="attribute">#[<span class="ident">doc</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">doc</span>:<span class="ident">literal</span>]</span> )<span class="op">+</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">vis</span>:<span class="ident">vis</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">id</span>:<span class="ident">ident</span> { <span class="ident">version</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">version</span>:<span class="ident">literal</span>, <span class="ident">name</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">literal</span>, <span class="ident">deprecated</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">deprecated</span>:<span class="ident">literal</span>, } ) =&gt; { ... };
 }</code></pre></div>
 </div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>This macro is used to declare an analyzer rule type, and implement the
 <a href="trait.RuleMeta.html" title="RuleMeta">RuleMeta</a> trait for it</p>
@@ -14,7 +15,10 @@
 
 <div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="macro">declare_rule!</span> {
     <span class="doccomment">/// Documentation</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">ExampleRule</span> <span class="op">=</span> <span class="string">&quot;ruleName&quot;</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">ExampleRule</span> {
+        <span class="ident">version</span>: <span class="string">&quot;0.7.0&quot;</span>,
+        <span class="ident">name</span>: <span class="string">&quot;ruleName&quot;</span>
+    }
 }</code></pre></div>
 <h2 id="documentation"><a href="#documentation">Documentation</a></h2>
 <p>The doc-comment for the rule is mandatory and is used to generate the
@@ -34,7 +38,10 @@ the language of the test must be explicitly specified, for instance:</p>
     <span class="doccomment">/// ```js</span>
     <span class="doccomment">/// let a, b;</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">NoVar</span> <span class="op">=</span> <span class="string">&quot;noVar&quot;</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">NoVar</span> {
+        <span class="ident">version</span>: <span class="string">&quot;0.7.0&quot;</span>,
+        <span class="ident">name</span>: <span class="string">&quot;noVar&quot;</span>
+    }
 }</code></pre></div>
 <p>Additionally, it’s possible to declare that a test should emit a diagnostic
 by adding <code>expect_diagnostic</code> to the language metadata:</p>
@@ -47,10 +54,32 @@ by adding <code>expect_diagnostic</code> to the language metadata:</p>
     <span class="doccomment">/// ```js,expect_diagnostic</span>
     <span class="doccomment">/// var a, b;</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">NoVar</span> <span class="op">=</span> <span class="string">&quot;noVar&quot;</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">NoVar</span> {
+        <span class="ident">version</span>: <span class="string">&quot;0.7.0&quot;</span>,
+        <span class="ident">name</span>: <span class="string">&quot;noVar&quot;</span>
+    }
 }</code></pre></div>
 <p>This will cause the documentation generator to ensure the rule does emit
 exactly one diagnostic for this code, and to include a snapshot for the
 diagnostic in the resulting documentation page</p>
+<h3 id="deprecation"><a href="#deprecation">Deprecation</a></h3>
+<p>There are occasions when a rule must be deprecated, to avoid breaking changes. The reason
+of deprecations can be multiples.</p>
+<p>In order to to do, the macro allows to add additional field to add the reason for deprecation</p>
+
+<div class='information'><div class='tooltip ignore'>ⓘ</div></div><div class="example-wrap"><pre class="rust rust-example-rendered ignore"><code><span class="macro">declare_rule!</span> {
+    <span class="doccomment">/// Disallow the use of `var`</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ### Invalid</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ```js,expect_diagnostic</span>
+    <span class="doccomment">/// var a, b;</span>
+    <span class="doccomment">/// ```</span>
+    <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="ident">NoVar</span> {
+        <span class="ident">version</span>: <span class="string">&quot;0.7.0&quot;</span>,
+        <span class="ident">name</span>: <span class="string">&quot;noVar&quot;</span>,
+        <span class="ident">deprecated</span>: <span class="string">&quot;Use the rule `noAnotherVar`&quot;</span>
+    }
+}</code></pre></div>
 </div></details></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="rome_analyze" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0 (a8314ef7d 2022-06-27)" ></div>
 </body></html>

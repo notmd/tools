@@ -274,6 +274,24 @@
 <span id="269">269</span>
 <span id="270">270</span>
 <span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">borrow::Borrow</span>, <span class="ident">collections::BTreeMap</span>};
 
 <span class="kw">use</span> <span class="ident">rome_rowan</span>::{<span class="ident">AstNode</span>, <span class="ident">Language</span>, <span class="ident">RawSyntaxKind</span>, <span class="ident">SyntaxKind</span>};
@@ -318,7 +336,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RuleRegistry</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Stores metadata information for all the rules in the registry, sorted</span>
     <span class="doccomment">/// alphabetically</span>
-    <span class="ident">metadata</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">MetadataKey</span>, <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>,
+    <span class="ident">metadata</span>: <span class="ident">BTreeMap</span><span class="op">&lt;</span><span class="ident">MetadataKey</span>, <span class="ident">MetadataValue</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Holds a collection of rules for each phase.</span>
     <span class="ident">phase_rules</span>: [<span class="ident">PhaseRules</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span>; <span class="number">2</span>],
 }
@@ -380,16 +398,26 @@
             <span class="ident">MetadataKey</span> {
                 <span class="ident">inner</span>: (<span class="ident">G::NAME</span>, <span class="ident">R::NAME</span>),
             },
-            <span class="ident">R::DOCS</span>,
+            <span class="ident">MetadataValue</span> {
+                <span class="ident">version</span>: <span class="ident">R::VERSION</span>,
+                <span class="ident">docs</span>: <span class="ident">R::DOCS</span>,
+                <span class="ident">deprecated</span>: <span class="ident">R::DEPRECATED</span>,
+            },
         );
     }
 
     <span class="doccomment">/// Returns an iterator over the name and documentation of all active rules</span>
     <span class="doccomment">/// in this instance of the registry</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">metadata</span>(<span class="self">self</span>) -&gt; <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">RuleMetadata</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">metadata</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">key</span>, <span class="ident">docs</span>)<span class="op">|</span> {
+        <span class="self">self</span>.<span class="ident">metadata</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">key</span>, <span class="ident">value</span>)<span class="op">|</span> {
             <span class="kw">let</span> (<span class="ident">group</span>, <span class="ident">name</span>) <span class="op">=</span> <span class="ident">key</span>.<span class="ident">inner</span>;
-            <span class="ident">RuleMetadata</span> { <span class="ident">group</span>, <span class="ident">name</span>, <span class="ident">docs</span> }
+            <span class="ident">RuleMetadata</span> {
+                <span class="ident">group</span>,
+                <span class="ident">name</span>,
+                <span class="ident">docs</span>: <span class="ident">value</span>.<span class="ident">docs</span>,
+                <span class="ident">version</span>: <span class="ident">value</span>.<span class="ident">version</span>,
+                <span class="ident">deprecated</span>: <span class="ident">value</span>.<span class="ident">deprecated</span>,
+            }
         })
     }
 }
@@ -474,11 +502,19 @@
     }
 }
 
+<span class="kw">struct</span> <span class="ident">MetadataValue</span> {
+    <span class="ident">version</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+    <span class="ident">docs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+    <span class="ident">deprecated</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>,
+}
+
 <span class="doccomment">/// Metadata entry for a rule in the registry</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">RuleMetadata</span> {
     <span class="kw">pub</span> <span class="ident">group</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
     <span class="kw">pub</span> <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
     <span class="kw">pub</span> <span class="ident">docs</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+    <span class="kw">pub</span> <span class="ident">version</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span>,
+    <span class="kw">pub</span> <span class="ident">deprecated</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// Internal representation of a single rule in the registry</span>

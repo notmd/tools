@@ -97,6 +97,10 @@
 <span id="92">92</span>
 <span id="93">93</span>
 <span id="94">94</span>
+<span id="95">95</span>
+<span id="96">96</span>
+<span id="97">97</span>
+<span id="98">98</span>
 </pre><pre class="rust"><code><span class="doccomment">//! Generated file, do not edit by hand, see `xtask/codegen`</span>
 
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::RuleConfiguration</span>;
@@ -149,6 +153,8 @@
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;RuleConfiguration::is_err&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">no_negation_else</span>: <span class="ident">RuleConfiguration</span>,
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;RuleConfiguration::is_err&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">no_shouty_constants</span>: <span class="ident">RuleConfiguration</span>,
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;RuleConfiguration::is_err&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">no_sparse_array</span>: <span class="ident">RuleConfiguration</span>,
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;RuleConfiguration::is_err&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">no_unnecessary_continue</span>: <span class="ident">RuleConfiguration</span>,
@@ -164,6 +170,8 @@
     <span class="kw">pub</span> <span class="ident">use_single_case_statement</span>: <span class="ident">RuleConfiguration</span>,
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;RuleConfiguration::is_err&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">use_single_var_declarator</span>: <span class="ident">RuleConfiguration</span>,
+    <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;RuleConfiguration::is_err&quot;</span>)]</span>
+    <span class="kw">pub</span> <span class="ident">use_template</span>: <span class="ident">RuleConfiguration</span>,
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;RuleConfiguration::is_err&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">use_valid_typeof</span>: <span class="ident">RuleConfiguration</span>,
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;RuleConfiguration::is_err&quot;</span>)]</span>
