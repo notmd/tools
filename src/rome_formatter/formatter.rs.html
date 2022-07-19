@@ -237,10 +237,22 @@
 <span id="232">232</span>
 <span id="233">233</span>
 <span id="234">234</span>
+<span id="235">235</span>
+<span id="236">236</span>
+<span id="237">237</span>
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::buffer::BufferSnapshot</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::builders</span>::{<span class="ident">FillBuilder</span>, <span class="ident">JoinBuilder</span>, <span class="ident">JoinNodesBuilder</span>, <span class="ident">Line</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Arguments</span>, <span class="ident">Buffer</span>, <span class="ident">FormatState</span>, <span class="ident">FormatStateSnapshot</span>, <span class="ident">GroupId</span>, <span class="ident">VecBuffer</span>};
+<span class="kw">use</span> <span class="kw">crate</span>::{
+    <span class="ident">Arguments</span>, <span class="ident">Buffer</span>, <span class="ident">FormatContext</span>, <span class="ident">FormatState</span>, <span class="ident">FormatStateSnapshot</span>, <span class="ident">GroupId</span>, <span class="ident">VecBuffer</span>,
+};
 
 <span class="doccomment">/// Handles the formatting of a CST and stores the context how the CST should be formatted (user preferences).</span>
 <span class="doccomment">/// The formatter is passed to the [Format] implementation of every node in the CST so that they</span>
@@ -258,6 +270,11 @@
     <span class="doccomment">/// Returns the Context specifying how to format the current CST</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">context</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="kw-2">&amp;</span><span class="ident">Context</span> {
         <span class="self">self</span>.<span class="ident">state</span>().<span class="ident">context</span>()
+    }
+
+    <span class="doccomment">/// Returns a mutable reference to the context.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">context_mut</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>) -&gt; <span class="kw-2">&amp;mut</span> <span class="ident">Context</span> {
+        <span class="self">self</span>.<span class="ident">state_mut</span>().<span class="ident">context_mut</span>()
     }
 
     <span class="doccomment">/// Creates a new group id that is unique to this document. The passed debug name is used in the</span>
@@ -412,10 +429,13 @@
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Context</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span> <span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span>, <span class="ident">Context</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">Context</span>: <span class="ident">FormatContext</span>,
+{
     <span class="doccomment">/// Take a snapshot of the state of the formatter</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">state_snapshot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FormatterSnapshot</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">state_snapshot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FormatterSnapshot</span><span class="op">&lt;</span><span class="ident">Context::Snapshot</span><span class="op">&gt;</span> {
         <span class="ident">FormatterSnapshot</span> {
             <span class="ident">buffer</span>: <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">snapshot</span>(),
             <span class="ident">state</span>: <span class="self">self</span>.<span class="ident">state</span>().<span class="ident">snapshot</span>(),
@@ -424,7 +444,7 @@
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="doccomment">/// Restore the state of the formatter to a previous snapshot</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">restore_state_snapshot</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">snapshot</span>: <span class="ident">FormatterSnapshot</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">restore_state_snapshot</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">snapshot</span>: <span class="ident">FormatterSnapshot</span><span class="op">&lt;</span><span class="ident">Context::Snapshot</span><span class="op">&gt;</span>) {
         <span class="self">self</span>.<span class="ident">state_mut</span>().<span class="ident">restore_snapshot</span>(<span class="ident">snapshot</span>.<span class="ident">state</span>);
         <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">restore_snapshot</span>(<span class="ident">snapshot</span>.<span class="ident">buffer</span>);
     }
@@ -467,9 +487,9 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// In practice this only saves the set of printed tokens in debug</span>
 <span class="doccomment">/// mode and compiled to nothing in release mode</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatterSnapshot</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatterSnapshot</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span> {
     <span class="ident">buffer</span>: <span class="ident">BufferSnapshot</span>,
-    <span class="ident">state</span>: <span class="ident">FormatStateSnapshot</span>,
+    <span class="ident">state</span>: <span class="ident">FormatStateSnapshot</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span>,
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rome_formatter" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0 (a8314ef7d 2022-06-27)" ></div>

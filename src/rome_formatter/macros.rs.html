@@ -425,6 +425,12 @@
 <span id="420">420</span>
 <span id="421">421</span>
 <span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
 </pre><pre class="rust"><code><span class="doccomment">/// Constructs the parameters for other formatting macros.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This macro functions by taking a list of objects implementing [crate::Format]. It canonicalize the</span>
@@ -632,7 +638,7 @@
 <span class="doccomment">/// // Takes the first variant if everything fits on a single line</span>
 <span class="doccomment">/// assert_eq!(</span>
 <span class="doccomment">///     &quot;aVeryLongIdentifier([1, 2, 3])&quot;,</span>
-<span class="doccomment">///     Formatted::new(elements.clone(), PrinterOptions::default())</span>
+<span class="doccomment">///     Formatted::new(elements.clone(), SimpleFormatContext::default())</span>
 <span class="doccomment">///         .print()</span>
 <span class="doccomment">///         .as_code()</span>
 <span class="doccomment">/// );</span>
@@ -641,7 +647,7 @@
 <span class="doccomment">/// // has some additional line breaks to make sure inner groups don&#39;t break</span>
 <span class="doccomment">/// assert_eq!(</span>
 <span class="doccomment">///     &quot;aVeryLongIdentifier([\n\t1, 2, 3\n])&quot;,</span>
-<span class="doccomment">///     Formatted::new(elements.clone(), PrinterOptions::default().with_print_width(21.try_into().unwrap()))</span>
+<span class="doccomment">///     Formatted::new(elements.clone(), SimpleFormatContext { line_width: 21.try_into().unwrap(), ..SimpleFormatContext::default() })</span>
 <span class="doccomment">///         .print()</span>
 <span class="doccomment">///         .as_code()</span>
 <span class="doccomment">/// );</span>
@@ -649,7 +655,7 @@
 <span class="doccomment">/// // Prints the last option as last resort</span>
 <span class="doccomment">/// assert_eq!(</span>
 <span class="doccomment">///     &quot;aVeryLongIdentifier(\n\t[\n\t\t1,\n\t\t2,\n\t\t3\n\t]\n)&quot;,</span>
-<span class="doccomment">///     Formatted::new(elements.clone(), PrinterOptions::default().with_print_width(20.try_into().unwrap()))</span>
+<span class="doccomment">///     Formatted::new(elements.clone(), SimpleFormatContext { line_width: 20.try_into().unwrap(), ..SimpleFormatContext::default() })</span>
 <span class="doccomment">///         .print()</span>
 <span class="doccomment">///         .as_code()</span>
 <span class="doccomment">/// );</span>
@@ -828,7 +834,10 @@
 
         <span class="kw">let</span> <span class="ident">best_fitting_code</span> <span class="op">=</span> <span class="ident">Formatted::new</span>(
             <span class="ident">formatted_best_fitting</span>.<span class="ident">into_format_element</span>(),
-            <span class="ident">PrinterOptions::default</span>().<span class="ident">with_print_width</span>(<span class="number">30</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>()),
+            <span class="ident">SimpleFormatContext</span> {
+                <span class="ident">line_width</span>: <span class="number">30</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
+                ..<span class="ident">SimpleFormatContext::default</span>()
+            },
         )
         .<span class="ident">print</span>()
         .<span class="ident">as_code</span>()
@@ -836,7 +845,10 @@
 
         <span class="kw">let</span> <span class="ident">normal_list_code</span> <span class="op">=</span> <span class="ident">Formatted::new</span>(
             <span class="ident">formatted_normal_list</span>.<span class="ident">into_format_element</span>(),
-            <span class="ident">PrinterOptions::default</span>().<span class="ident">with_print_width</span>(<span class="number">30</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>()),
+            <span class="ident">SimpleFormatContext</span> {
+                <span class="ident">line_width</span>: <span class="number">30</span>.<span class="ident">try_into</span>().<span class="ident">unwrap</span>(),
+                ..<span class="ident">SimpleFormatContext::default</span>()
+            },
         )
         .<span class="ident">print</span>()
         .<span class="ident">as_code</span>()

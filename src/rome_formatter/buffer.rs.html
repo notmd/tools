@@ -944,7 +944,7 @@ Make sure that you take and restore the snapshot in order and that this snapshot
 <span class="doccomment">///</span>
 <span class="doccomment">/// drop(with_preamble);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let formatted = Formatted::new(buffer.into_element(), PrinterOptions::default());</span>
+<span class="doccomment">/// let formatted = Formatted::new(buffer.into_element(), SimpleFormatContext::default());</span>
 <span class="doccomment">/// assert_eq!(&quot;# heading\nthis text will be on a new line&quot;, formatted.print().as_code());</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
@@ -968,7 +968,7 @@ Make sure that you take and restore the snapshot in order and that this snapshot
 <span class="doccomment">/// let mut with_preamble = PreambleBuffer::new(&amp;mut buffer, Preamble);</span>
 <span class="doccomment">/// drop(with_preamble);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// let formatted = Formatted::new(buffer.into_element(), PrinterOptions::default());</span>
+<span class="doccomment">/// let formatted = Formatted::new(buffer.into_element(), SimpleFormatContext::default());</span>
 <span class="doccomment">/// assert_eq!(&quot;&quot;, formatted.print().as_code());</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PreambleBuffer</span><span class="op">&lt;</span><span class="lifetime">&#39;buf</span>, <span class="ident">Preamble</span>, <span class="ident">Context</span><span class="op">&gt;</span> {
