@@ -327,7 +327,6 @@
 <span id="322">322</span>
 <span id="323">323</span>
 <span id="324">324</span>
-<span id="325">325</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">cmp::Ordering</span>, <span class="ident">collections::BinaryHeap</span>};
 
 <span class="kw">use</span> <span class="ident">rome_diagnostics::file::FileId</span>;
@@ -349,13 +348,13 @@
 }
 
 <span class="doccomment">/// Parameters provided to [QueryMatcher::match_query] and require to run lint rules</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MatchQueryParams</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">MatchQueryParams</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="lifetime">&#39;query</span>, <span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> {
     <span class="kw">pub</span> <span class="ident">phase</span>: <span class="ident">Phases</span>,
     <span class="kw">pub</span> <span class="ident">file_id</span>: <span class="ident">FileId</span>,
-    <span class="kw">pub</span> <span class="ident">root</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">L::Root</span>,
+    <span class="kw">pub</span> <span class="ident">root</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;phase</span> <span class="ident">L::Root</span>,
     <span class="kw">pub</span> <span class="ident">query</span>: <span class="ident">QueryMatch</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">services</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ServiceBag</span>,
-    <span class="kw">pub</span> <span class="ident">signal_queue</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="kw-2">mut</span> <span class="ident">BinaryHeap</span><span class="op">&lt;</span><span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">services</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;phase</span> <span class="ident">ServiceBag</span>,
+    <span class="kw">pub</span> <span class="ident">signal_queue</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;query</span> <span class="kw-2">mut</span> <span class="ident">BinaryHeap</span><span class="op">&lt;</span><span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="ident">L</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// Opaque identifier for a group of rule</span>
@@ -413,9 +412,9 @@
 }
 
 <span class="doccomment">/// Entry for a pending signal in the `signal_queue`</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Boxed analyzer signal to be emitted</span>
-    <span class="kw">pub</span> <span class="ident">signal</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">AnalyzerSignal</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">signal</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="kw">dyn</span> <span class="ident">AnalyzerSignal</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;phase</span><span class="op">&gt;</span>,
     <span class="doccomment">/// Unique identifier for the rule that emitted this signal</span>
     <span class="kw">pub</span> <span class="ident">rule</span>: <span class="ident">RuleKey</span>,
     <span class="doccomment">/// Text range in the document this signal covers</span>
@@ -423,21 +422,21 @@
 }
 
 <span class="comment">// SignalEntry is ordered based on the starting point of its `text_range`</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="ident">L</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">Ordering</span> {
         <span class="ident">other</span>.<span class="ident">text_range</span>.<span class="ident">start</span>().<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">text_range</span>.<span class="ident">start</span>())
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="ident">L</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ordering</span><span class="op">&gt;</span> {
         <span class="prelude-val">Some</span>(<span class="self">self</span>.<span class="ident">cmp</span>(<span class="ident">other</span>))
     }
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span> {}
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="ident">L</span><span class="op">&gt;</span> {}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> <span class="ident">PartialEq</span> <span class="kw">for</span> <span class="ident">SignalEntry</span><span class="op">&lt;</span><span class="lifetime">&#39;phase</span>, <span class="ident">L</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">eq</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) -&gt; <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">text_range</span>.<span class="ident">start</span>() <span class="op">==</span> <span class="ident">other</span>.<span class="ident">text_range</span>.<span class="ident">start</span>()
     }
@@ -617,10 +616,9 @@
             <span class="kw-2">&amp;mut</span> <span class="ident">emit_signal</span>,
         );
 
-        <span class="ident">analyzer</span>.<span class="ident">add_visitor</span>(<span class="ident">SyntaxVisitor::default</span>());
+        <span class="ident">analyzer</span>.<span class="ident">add_visitor</span>(<span class="ident">Phases::Syntax</span>, <span class="ident">SyntaxVisitor::default</span>());
 
         <span class="kw">let</span> <span class="ident">ctx</span>: <span class="ident">AnalyzerContext</span><span class="op">&lt;</span><span class="ident">RawLanguage</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">AnalyzerContext</span> {
-            <span class="ident">phase</span>: <span class="ident">Phases::Syntax</span>,
             <span class="ident">file_id</span>: <span class="number">0</span>,
             <span class="ident">root</span>,
             <span class="ident">range</span>: <span class="prelude-val">None</span>,
