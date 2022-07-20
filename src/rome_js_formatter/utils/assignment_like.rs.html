@@ -1151,11 +1151,28 @@
 <span id="1146">1146</span>
 <span id="1147">1147</span>
 <span id="1148">1148</span>
+<span id="1149">1149</span>
+<span id="1150">1150</span>
+<span id="1151">1151</span>
+<span id="1152">1152</span>
+<span id="1153">1153</span>
+<span id="1154">1154</span>
+<span id="1155">1155</span>
+<span id="1156">1156</span>
+<span id="1157">1157</span>
+<span id="1158">1158</span>
+<span id="1159">1159</span>
+<span id="1160">1160</span>
+<span id="1161">1161</span>
+<span id="1162">1162</span>
+<span id="1163">1163</span>
+<span id="1164">1164</span>
+<span id="1165">1165</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils::member_chain::is_member_call_chain</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils::object::write_member_name</span>;
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::utils::JsAnyBinaryLikeExpression</span>;
-<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">format_args</span>, <span class="ident">write</span>, <span class="ident">VecBuffer</span>};
+<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">format_args</span>, <span class="ident">write</span>, <span class="ident">CstFormatContext</span>, <span class="ident">VecBuffer</span>};
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{
     <span class="ident">JsAnyAssignmentPattern</span>, <span class="ident">JsAnyBindingPattern</span>, <span class="ident">JsAnyCallArgument</span>, <span class="ident">JsAnyClassMemberName</span>,
     <span class="ident">JsAnyExpression</span>, <span class="ident">JsAnyFunctionBody</span>, <span class="ident">JsAnyObjectAssignmentPatternMember</span>,
@@ -1521,6 +1538,14 @@
         <span class="kw">match</span> <span class="self">self</span> {
             <span class="ident">JsAnyAssignmentLike::JsPropertyObjectMember</span>(<span class="ident">property</span>) =&gt; {
                 <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">property</span>.<span class="ident">name</span>()<span class="question-mark">?</span>;
+
+                <span class="comment">// It&#39;s safe to mark the name as checked here because it is at the beginning of the property</span>
+                <span class="comment">// and any suppression comment that would apply to the name applies to the property too and is,</span>
+                <span class="comment">// thus, handled on the property level.</span>
+                <span class="ident">f</span>.<span class="ident">context</span>()
+                    .<span class="ident">comments</span>()
+                    .<span class="ident">mark_suppression_checked</span>(<span class="ident">name</span>.<span class="ident">syntax</span>());
+
                 <span class="kw">let</span> <span class="ident">width</span> <span class="op">=</span> <span class="ident">write_member_name</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>.<span class="ident">into</span>(), <span class="ident">f</span>)<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">text_width_for_break</span> <span class="op">=</span>
                     (<span class="ident">u8::from</span>(<span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">tab_width</span>()) <span class="op">+</span> <span class="ident">MIN_OVERLAP_FOR_BREAK</span>) <span class="kw">as</span> <span class="ident">usize</span>;
@@ -1532,7 +1557,16 @@
                 <span class="prelude-val">Ok</span>(<span class="bool-val">false</span>)
             }
             <span class="ident">JsAnyAssignmentLike::JsObjectAssignmentPatternProperty</span>(<span class="ident">property</span>) =&gt; {
-                <span class="kw">let</span> <span class="ident">width</span> <span class="op">=</span> <span class="ident">write_member_name</span>(<span class="kw-2">&amp;</span><span class="ident">property</span>.<span class="ident">member</span>()<span class="question-mark">?</span>.<span class="ident">into</span>(), <span class="ident">f</span>)<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">member_name</span> <span class="op">=</span> <span class="ident">property</span>.<span class="ident">member</span>()<span class="question-mark">?</span>;
+
+                <span class="comment">// It&#39;s safe to mark the name as checked here because it is at the beginning of the property</span>
+                <span class="comment">// and any suppression comment that would apply to the name applies to the property too and is,</span>
+                <span class="comment">// thus, handled on the property level.</span>
+                <span class="ident">f</span>.<span class="ident">context</span>()
+                    .<span class="ident">comments</span>()
+                    .<span class="ident">mark_suppression_checked</span>(<span class="ident">member_name</span>.<span class="ident">syntax</span>());
+
+                <span class="kw">let</span> <span class="ident">width</span> <span class="op">=</span> <span class="ident">write_member_name</span>(<span class="kw-2">&amp;</span><span class="ident">member_name</span>.<span class="ident">into</span>(), <span class="ident">f</span>)<span class="question-mark">?</span>;
                 <span class="kw">let</span> <span class="ident">text_width_for_break</span> <span class="op">=</span>
                     (<span class="ident">u8::from</span>(<span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">tab_width</span>()) <span class="op">+</span> <span class="ident">MIN_OVERLAP_FOR_BREAK</span>) <span class="kw">as</span> <span class="ident">usize</span>;
                 <span class="prelude-val">Ok</span>(<span class="ident">width</span> <span class="op">&lt;</span> <span class="ident">text_width_for_break</span>)
@@ -1566,8 +1600,8 @@
 
                 <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span><span class="question-mark">?</span>;
 
-                <span class="kw">let</span> <span class="ident">is_short</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">f</span>.<span class="ident">context_mut</span>().<span class="ident">is_suppressed</span>(<span class="ident">name</span>.<span class="ident">syntax</span>()) {
-                    <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">format_verbatim_node</span>(<span class="ident">name</span>.<span class="ident">syntax</span>())])<span class="question-mark">?</span>;
+                <span class="kw">let</span> <span class="ident">is_short</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">comments</span>().<span class="ident">is_suppressed</span>(<span class="ident">name</span>.<span class="ident">syntax</span>()) {
+                    <span class="macro">write!</span>(<span class="ident">f</span>, [<span class="ident">format_suppressed_node</span>(<span class="ident">name</span>.<span class="ident">syntax</span>())])<span class="question-mark">?</span>;
                     <span class="bool-val">false</span>
                 } <span class="kw">else</span> {
                     <span class="kw">let</span> <span class="ident">width</span> <span class="op">=</span> <span class="ident">write_member_name</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>.<span class="ident">into</span>(), <span class="ident">f</span>)<span class="question-mark">?</span>;
@@ -1717,7 +1751,7 @@
         <span class="kw">let</span> <span class="ident">right</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">right</span>()<span class="question-mark">?</span>;
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="ident">RightAssignmentLike::JsInitializerClause</span>(<span class="ident">initializer</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">right</span> {
-            <span class="kw">if</span> <span class="ident">f</span>.<span class="ident">context_mut</span>().<span class="ident">is_suppressed</span>(<span class="ident">initializer</span>.<span class="ident">syntax</span>()) {
+            <span class="kw">if</span> <span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">comments</span>().<span class="ident">is_suppressed</span>(<span class="ident">initializer</span>.<span class="ident">syntax</span>()) {
                 <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">AssignmentLikeLayout::SuppressedInitializer</span>);
             }
         }

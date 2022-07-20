@@ -891,8 +891,13 @@
 <span id="886">886</span>
 <span id="887">887</span>
 <span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">write</span>, <span class="ident">Buffer</span>};
+<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">write</span>, <span class="ident">Buffer</span>, <span class="ident">CstFormatContext</span>};
 <span class="kw">use</span> <span class="ident">rome_js_syntax</span>::{
     <span class="ident">JsAnyExpression</span>, <span class="ident">JsAnyInProperty</span>, <span class="ident">JsBinaryExpression</span>, <span class="ident">JsBinaryOperator</span>, <span class="ident">JsInExpression</span>,
     <span class="ident">JsInstanceofExpression</span>, <span class="ident">JsLogicalExpression</span>, <span class="ident">JsLogicalOperator</span>, <span class="ident">JsPrivateName</span>, <span class="ident">JsSyntaxKind</span>,
@@ -1003,6 +1008,11 @@
         <span class="kw">let</span> <span class="ident">parent_operator</span> <span class="op">=</span> <span class="ident">parent</span>.<span class="ident">operator_token</span>()<span class="question-mark">?</span>;
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">left</span>) <span class="op">=</span> <span class="ident">left</span> {
+            <span class="comment">// It&#39;s only possible to suppress the formatting of the whole binary expression formatting OR</span>
+            <span class="comment">// the formatting of the right hand side value but not of a nested binary expression.</span>
+            <span class="ident">f</span>.<span class="ident">context</span>()
+                .<span class="ident">comments</span>()
+                .<span class="ident">mark_suppression_checked</span>(<span class="ident">left</span>.<span class="ident">syntax</span>());
             <span class="ident">flatten_items</span>.<span class="ident">flatten_binary_expression_right_hand_side</span>(<span class="ident">left</span>, <span class="prelude-val">Some</span>(<span class="ident">parent_operator</span>))<span class="question-mark">?</span>;
         } <span class="kw">else</span> {
             <span class="comment">// Leaf binary like expression. Format the left hand side.</span>
@@ -1298,7 +1308,7 @@
                 <span class="ident">parent</span>: <span class="ident">binary_like_expression</span>,
             },
             <span class="ident">parent_operator</span>,
-            <span class="ident">Comments::NoComments</span>,
+            <span class="ident">Commented::No</span>,
         );
 
         <span class="comment">// Format the parent operator</span>
@@ -1323,25 +1333,25 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
-<span class="kw">enum</span> <span class="ident">Comments</span> {
-    <span class="ident">WithComments</span>,
-    <span class="ident">NoComments</span>,
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">enum</span> <span class="ident">Commented</span> {
+    <span class="ident">Yes</span>,
+    <span class="ident">No</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Comments</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">bool</span> {
-    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">comments</span>: <span class="kw-2">&amp;</span><span class="ident">Comments</span>) -&gt; <span class="self">Self</span> {
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Commented</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">comments</span>: <span class="ident">Commented</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">match</span> <span class="ident">comments</span> {
-            <span class="ident">Comments::WithComments</span> =&gt; <span class="bool-val">true</span>,
-            <span class="ident">Comments::NoComments</span> =&gt; <span class="bool-val">false</span>,
+            <span class="ident">Commented::Yes</span> =&gt; <span class="bool-val">true</span>,
+            <span class="ident">Commented::No</span> =&gt; <span class="bool-val">false</span>,
         }
     }
 }
-<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Comments</span> {
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Commented</span> {
     <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">b</span>: <span class="ident">bool</span>) -&gt; <span class="self">Self</span> {
         <span class="kw">match</span> <span class="ident">b</span> {
-            <span class="bool-val">true</span> =&gt; <span class="ident">Comments::WithComments</span>,
-            <span class="bool-val">false</span> =&gt; <span class="ident">Comments::NoComments</span>,
+            <span class="bool-val">true</span> =&gt; <span class="ident">Commented::Yes</span>,
+            <span class="bool-val">false</span> =&gt; <span class="ident">Commented::No</span>,
         }
     }
 }
@@ -1485,7 +1495,7 @@
     <span class="ident">expression</span>: <span class="ident">FlattenedBinaryExpressionPart</span>,
     <span class="ident">operator</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">JsSyntaxToken</span><span class="op">&gt;</span>,
     <span class="ident">terminator</span>: <span class="ident">TrailingTerminator</span>,
-    <span class="ident">comments</span>: <span class="ident">Comments</span>,
+    <span class="ident">comments</span>: <span class="ident">Commented</span>,
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
@@ -1498,7 +1508,7 @@
     <span class="kw">fn</span> <span class="ident">new</span>(
         <span class="ident">expression</span>: <span class="ident">FlattenedBinaryExpressionPart</span>,
         <span class="ident">operator</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">JsSyntaxToken</span><span class="op">&gt;</span>,
-        <span class="ident">comments</span>: <span class="ident">Comments</span>,
+        <span class="ident">comments</span>: <span class="ident">Commented</span>,
     ) -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">expression</span>,
@@ -1509,7 +1519,7 @@
     }
 
     <span class="kw">fn</span> <span class="ident">has_comments</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">bool</span> {
-        <span class="macro">matches!</span>(<span class="self">self</span>.<span class="ident">comments</span>, <span class="ident">Comments::WithComments</span>)
+        <span class="macro">matches!</span>(<span class="self">self</span>.<span class="ident">comments</span>, <span class="ident">Commented::Yes</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">with_terminator</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">terminator</span>: <span class="ident">TrailingTerminator</span>) -&gt; <span class="self">Self</span> {
@@ -1517,7 +1527,7 @@
         <span class="self">self</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">with_comments</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Comments</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">comments</span>: <span class="ident">I</span>) -&gt; <span class="self">Self</span> {
+    <span class="kw">fn</span> <span class="ident">with_comments</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Commented</span><span class="op">&gt;</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">comments</span>: <span class="ident">I</span>) -&gt; <span class="self">Self</span> {
         <span class="self">self</span>.<span class="ident">comments</span> <span class="op">=</span> <span class="ident">comments</span>.<span class="ident">into</span>();
         <span class="self">self</span>
     }

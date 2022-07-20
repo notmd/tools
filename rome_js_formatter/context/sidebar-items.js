@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["QuoteStyle",""]],"struct":[["JsCommentStyle",""],["JsFormatContext",""],["JsFormatContextSnapshot",""],["TabWidth",""]]});
+initSidebarItems({"enum":[["QuoteStyle",""]],"struct":[["JsCommentStyle",""],["JsFormatContext",""],["TabWidth",""]]});

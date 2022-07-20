@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["SuppressionCategory",""]],"fn":[["has_suppressions_category","Returns true if this node has a suppression comment of the provided category"],["parse_suppression_comment",""]],"struct":[["Suppression","Single instance of a suppression comment, with the following syntax:"]]});
+initSidebarItems({"enum":[["SuppressionCategory",""]],"fn":[["parse_suppression_comment",""]],"struct":[["Suppression","Single instance of a suppression comment, with the following syntax:"]]});

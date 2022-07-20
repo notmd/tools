@@ -121,7 +121,7 @@
 <span id="116">116</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::prelude</span>::<span class="kw-2">*</span>;
 
-<span class="kw">use</span> <span class="ident">rome_formatter::write</span>;
+<span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">write</span>, <span class="ident">CstFormatContext</span>};
 <span class="kw">use</span> <span class="ident">rome_js_syntax::JsAnyNamedImport</span>;
 <span class="kw">use</span> <span class="ident">rome_js_syntax::JsAnyNamedImportSpecifier</span>;
 <span class="kw">use</span> <span class="ident">rome_js_syntax::JsImportNamedClause</span>;
@@ -174,7 +174,7 @@
             <span class="kw">match</span> <span class="ident">named_import</span> {
                 <span class="ident">JsAnyNamedImport::JsNamedImportSpecifiers</span>(<span class="kw-2">ref</span> <span class="ident">specifiers</span>)
                     <span class="kw">if</span> <span class="ident">specifiers</span>.<span class="ident">specifiers</span>().<span class="ident">len</span>() <span class="op">==</span> <span class="number">1</span>
-                        <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">f</span>.<span class="ident">context_mut</span>().<span class="ident">is_suppressed</span>(<span class="ident">specifiers</span>.<span class="ident">syntax</span>()) =&gt;
+                        <span class="op">&amp;&amp;</span> <span class="op">!</span><span class="ident">f</span>.<span class="ident">context</span>().<span class="ident">comments</span>().<span class="ident">is_suppressed</span>(<span class="ident">specifiers</span>.<span class="ident">syntax</span>()) =&gt;
                 {
                     <span class="comment">// SAFETY: we know that the `specifiers.specifiers().len() == 1`, so unwrap `iter().next()` is safe.</span>
                     <span class="kw">let</span> <span class="ident">first_specifier</span> <span class="op">=</span> <span class="ident">specifiers</span>.<span class="ident">specifiers</span>().<span class="ident">elements</span>().<span class="ident">next</span>().<span class="ident">unwrap</span>();

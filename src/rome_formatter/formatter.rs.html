@@ -435,7 +435,7 @@
 {
     <span class="doccomment">/// Take a snapshot of the state of the formatter</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">state_snapshot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FormatterSnapshot</span><span class="op">&lt;</span><span class="ident">Context::Snapshot</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">state_snapshot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="ident">FormatterSnapshot</span> {
         <span class="ident">FormatterSnapshot</span> {
             <span class="ident">buffer</span>: <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">snapshot</span>(),
             <span class="ident">state</span>: <span class="self">self</span>.<span class="ident">state</span>().<span class="ident">snapshot</span>(),
@@ -444,7 +444,7 @@
 
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="doccomment">/// Restore the state of the formatter to a previous snapshot</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">restore_state_snapshot</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">snapshot</span>: <span class="ident">FormatterSnapshot</span><span class="op">&lt;</span><span class="ident">Context::Snapshot</span><span class="op">&gt;</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">restore_state_snapshot</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">snapshot</span>: <span class="ident">FormatterSnapshot</span>) {
         <span class="self">self</span>.<span class="ident">state_mut</span>().<span class="ident">restore_snapshot</span>(<span class="ident">snapshot</span>.<span class="ident">state</span>);
         <span class="self">self</span>.<span class="ident">buffer</span>.<span class="ident">restore_snapshot</span>(<span class="ident">snapshot</span>.<span class="ident">buffer</span>);
     }
@@ -487,9 +487,9 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// In practice this only saves the set of printed tokens in debug</span>
 <span class="doccomment">/// mode and compiled to nothing in release mode</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatterSnapshot</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FormatterSnapshot</span> {
     <span class="ident">buffer</span>: <span class="ident">BufferSnapshot</span>,
-    <span class="ident">state</span>: <span class="ident">FormatStateSnapshot</span><span class="op">&lt;</span><span class="ident">Context</span><span class="op">&gt;</span>,
+    <span class="ident">state</span>: <span class="ident">FormatStateSnapshot</span>,
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rome_formatter" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0 (a8314ef7d 2022-06-27)" ></div>
