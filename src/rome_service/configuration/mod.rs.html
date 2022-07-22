@@ -223,6 +223,10 @@
 <span id="218">218</span>
 <span id="219">219</span>
 <span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
 </pre><pre class="rust"><code><span class="doccomment">//! This module contains the configuration of `rome.json`</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! The configuration is divided by &quot;tool&quot;, and then it&#39;s possible to further customise it</span>
@@ -245,7 +249,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">linter</span>::{<span class="ident">RuleConfiguration</span>, <span class="ident">Rules</span>};
 
 <span class="doccomment">/// The configuration that is contained inside the file `rome.json`</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Deserialize</span>, <span class="ident">Serialize</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">deny_unknown_fields</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Configuration</span> {
     <span class="doccomment">/// One root file should exist. Useful when `extends` comes into play.</span>
@@ -268,10 +272,14 @@
 
 <span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Configuration</span> {
     <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
+        <span class="comment">// TODO: enable recommendation settings https://github.com/rome/tools/issues/2912</span>
         <span class="self">Self</span> {
             <span class="ident">root</span>: <span class="bool-val">true</span>,
+            <span class="ident">linter</span>: <span class="prelude-val">Some</span>(<span class="ident">LinterConfiguration</span> {
+                <span class="ident">enabled</span>: <span class="bool-val">true</span>,
+                ..<span class="ident">LinterConfiguration::default</span>()
+            }),
             <span class="ident">formatter</span>: <span class="prelude-val">None</span>,
-            <span class="ident">linter</span>: <span class="prelude-val">None</span>,
             <span class="ident">javascript</span>: <span class="prelude-val">None</span>,
         }
     }

@@ -158,7 +158,19 @@
 <span id="153">153</span>
 <span id="154">154</span>
 <span id="155">155</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">RwLock</span>, <span class="ident">RwLockReadGuard</span>};
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">indexmap::IndexSet</span>;
+<span class="kw">use</span> <span class="ident">std::sync</span>::{<span class="ident">RwLock</span>, <span class="ident">RwLockReadGuard</span>};
 
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Configuration</span>, <span class="ident">Rules</span>};
 <span class="kw">use</span> <span class="ident">rome_formatter</span>::{<span class="ident">IndentStyle</span>, <span class="ident">LineWidth</span>};
@@ -178,7 +190,7 @@
 
 <span class="kw">impl</span> <span class="ident">WorkspaceSettings</span> {
     <span class="doccomment">/// The (configuration)[Configuration] is merged into the workspace</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">merge_with_configuration</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">configuration</span>: <span class="kw-2">&amp;</span><span class="ident">Configuration</span>) {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">merge_with_configuration</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">configuration</span>: <span class="ident">Configuration</span>) {
         <span class="comment">// formatter part</span>
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">formatter</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">configuration</span>.<span class="ident">formatter</span> {
             <span class="self">self</span>.<span class="ident">format</span> <span class="op">=</span> <span class="ident">FormatSettings::from</span>(<span class="ident">formatter</span>);
@@ -194,6 +206,11 @@
         <span class="comment">// linter part</span>
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">linter</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">configuration</span>.<span class="ident">linter</span> {
             <span class="self">self</span>.<span class="ident">linter</span> <span class="op">=</span> <span class="ident">LinterSettings::from</span>(<span class="ident">linter</span>)
+        }
+
+        <span class="kw">let</span> <span class="ident">globals</span> <span class="op">=</span> <span class="ident">configuration</span>.<span class="ident">javascript</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">j</span><span class="op">|</span> <span class="ident">j</span>.<span class="ident">globals</span>);
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">globals</span>) <span class="op">=</span> <span class="ident">globals</span> {
+            <span class="self">self</span>.<span class="ident">languages</span>.<span class="ident">javascript</span>.<span class="ident">globals</span> <span class="op">=</span> <span class="ident">globals</span>;
         }
     }
 }
@@ -227,11 +244,7 @@
     <span class="doccomment">/// Enabled by default</span>
     <span class="kw">pub</span> <span class="ident">enabled</span>: <span class="ident">bool</span>,
 
-    <span class="doccomment">/// A list of global bindings that should be ignored by the analyzers</span>
-    <span class="doccomment">///</span>
-    <span class="doccomment">/// If defined here, they should not emit diagnostics.</span>
-    <span class="kw">pub</span> <span class="ident">globals</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
-
+    <span class="doccomment">/// List of rules</span>
     <span class="kw">pub</span> <span class="ident">rules</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rules</span><span class="op">&gt;</span>,
 }
 
@@ -239,7 +252,6 @@
     <span class="kw">fn</span> <span class="ident">default</span>() -&gt; <span class="self">Self</span> {
         <span class="self">Self</span> {
             <span class="ident">enabled</span>: <span class="bool-val">true</span>,
-            <span class="ident">globals</span>: <span class="macro">vec!</span>[],
             <span class="ident">rules</span>: <span class="prelude-val">Some</span>(<span class="ident">Rules::default</span>()),
         }
     }
@@ -254,6 +266,10 @@
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Language</span>: <span class="ident">rome_rowan::Language</span> {
     <span class="doccomment">/// Formatter settings type for this language</span>
     <span class="kw">type</span> <span class="ident">FormatSettings</span>: <span class="ident">Default</span>;
+
+    <span class="doccomment">/// Linter settings type for this language</span>
+    <span class="kw">type</span> <span class="ident">LinterSettings</span>: <span class="ident">Default</span>;
+
     <span class="doccomment">/// Fully resolved formatter options type for this language</span>
     <span class="kw">type</span> <span class="ident">FormatContext</span>: <span class="ident">rome_formatter::FormatContext</span>;
 
@@ -274,6 +290,12 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LanguageSettings</span><span class="op">&lt;</span><span class="ident">L</span>: <span class="ident">Language</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Formatter settings for this language</span>
     <span class="kw">pub</span> <span class="ident">format</span>: <span class="ident">L::FormatSettings</span>,
+
+    <span class="doccomment">/// Linter settings for this language</span>
+    <span class="kw">pub</span> <span class="ident">linter</span>: <span class="ident">L::LinterSettings</span>,
+
+    <span class="doccomment">/// Globals variables/bindings that can be found in a file</span>
+    <span class="kw">pub</span> <span class="ident">globals</span>: <span class="ident">IndexSet</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// Handle object holding a temporary lock on the workspace settings until</span>

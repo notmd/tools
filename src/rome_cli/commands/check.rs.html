@@ -60,26 +60,13 @@
 <span id="55">55</span>
 <span id="56">56</span>
 <span id="57">57</span>
-<span id="58">58</span>
-<span id="59">59</span>
-<span id="60">60</span>
-<span id="61">61</span>
-<span id="62">62</span>
-<span id="63">63</span>
-<span id="64">64</span>
-<span id="65">65</span>
-<span id="66">66</span>
-<span id="67">67</span>
-<span id="68">68</span>
-<span id="69">69</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::commands::format::parse_format_options</span>;
+</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::commands::format::apply_format_settings_from_cli</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">traversal</span>::{<span class="ident">traverse</span>, <span class="ident">TraversalMode</span>},
     <span class="ident">CliSession</span>, <span class="ident">Termination</span>,
 };
 <span class="kw">use</span> <span class="ident">rome_diagnostics::MAXIMUM_DISPLAYABLE_DIAGNOSTICS</span>;
-<span class="kw">use</span> <span class="ident">rome_service::configuration::Configuration</span>;
-<span class="kw">use</span> <span class="ident">rome_service::settings</span>::{<span class="ident">LinterSettings</span>, <span class="ident">WorkspaceSettings</span>};
+<span class="kw">use</span> <span class="ident">rome_service::settings::WorkspaceSettings</span>;
 <span class="kw">use</span> <span class="ident">rome_service::workspace::UpdateSettingsParams</span>;
 <span class="kw">use</span> <span class="ident">rome_service</span>::{<span class="ident">load_config</span>, <span class="ident">ConfigurationType</span>};
 
@@ -109,8 +96,11 @@
         <span class="number">20</span>
     };
 
-    <span class="ident">parse_format_options</span>(<span class="kw-2">&amp;mut</span> <span class="ident">session</span>, <span class="kw-2">&amp;mut</span> <span class="ident">workspace_settings</span>, <span class="kw-2">&amp;</span><span class="ident">configuration</span>)<span class="question-mark">?</span>;
-    <span class="ident">parse_linter_options</span>(<span class="kw-2">&amp;mut</span> <span class="ident">session</span>, <span class="kw-2">&amp;mut</span> <span class="ident">workspace_settings</span>, <span class="kw-2">&amp;</span><span class="ident">configuration</span>)<span class="question-mark">?</span>;
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">configuration</span>) <span class="op">=</span> <span class="ident">configuration</span> {
+        <span class="ident">workspace_settings</span>.<span class="ident">merge_with_configuration</span>(<span class="ident">configuration</span>)
+    }
+
+    <span class="ident">apply_format_settings_from_cli</span>(<span class="kw-2">&amp;mut</span> <span class="ident">session</span>, <span class="kw-2">&amp;mut</span> <span class="ident">workspace_settings</span>)<span class="question-mark">?</span>;
 
     <span class="ident">session</span>
         .<span class="ident">app</span>
@@ -126,20 +116,6 @@
         },
         <span class="ident">session</span>,
     )
-}
-
-<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">fn</span> <span class="ident">parse_linter_options</span>(
-    <span class="ident">_session</span>: <span class="kw-2">&amp;mut</span> <span class="ident">CliSession</span>,
-    <span class="ident">workspace_settings</span>: <span class="kw-2">&amp;mut</span> <span class="ident">WorkspaceSettings</span>,
-    <span class="ident">configuration</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Configuration</span><span class="op">&gt;</span>,
-) -&gt; <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">Termination</span><span class="op">&gt;</span> {
-    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">configuration</span>) <span class="op">=</span> <span class="ident">configuration</span> {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">linter</span>) <span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">configuration</span>.<span class="ident">linter</span> {
-            <span class="ident">workspace_settings</span>.<span class="ident">linter</span> <span class="op">=</span> <span class="ident">LinterSettings::from</span>(<span class="ident">linter</span>);
-        }
-    }
-
-    <span class="prelude-val">Ok</span>(())
 }
 </code></pre></div>
 </section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="rome_cli" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0 (a8314ef7d 2022-06-27)" ></div>

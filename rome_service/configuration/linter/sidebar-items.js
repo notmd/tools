@@ -1,1 +1,1 @@
-initSidebarItems({"enum":[["RuleConfiguration",""]],"struct":[["LinterConfiguration",""],["Rules",""]]});
+initSidebarItems({"enum":[["RuleConfiguration",""],["RulePlainConfiguration",""]],"struct":[["LinterConfiguration",""],["RuleWithOptions",""],["Rules",""]]});
