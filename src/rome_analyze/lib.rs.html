@@ -591,6 +591,8 @@
 <span id="586">586</span>
 <span id="587">587</span>
 <span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">deny</span>(<span class="ident">rustdoc::broken_intra_doc_links</span>)]</span>
 
 <span class="kw">use</span> <span class="ident">std::cmp::Ordering</span>;
@@ -611,7 +613,9 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::categories</span>::{<span class="ident">ActionCategory</span>, <span class="ident">RuleCategories</span>, <span class="ident">RuleCategory</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::matcher</span>::{<span class="ident">QueryMatcher</span>, <span class="ident">RuleKey</span>, <span class="ident">SignalEntry</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::query</span>::{<span class="ident">Ast</span>, <span class="ident">QueryKey</span>, <span class="ident">QueryMatch</span>, <span class="ident">Queryable</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::registry</span>::{<span class="ident">LanguageRoot</span>, <span class="ident">Phase</span>, <span class="ident">Phases</span>, <span class="ident">RuleMetadata</span>, <span class="ident">RuleRegistry</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::registry</span>::{
+    <span class="ident">LanguageRoot</span>, <span class="ident">Phase</span>, <span class="ident">Phases</span>, <span class="ident">RuleMetadata</span>, <span class="ident">RuleRegistry</span>, <span class="ident">RuleSuppressions</span>,
+};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::rule</span>::{<span class="ident">GroupLanguage</span>, <span class="ident">Rule</span>, <span class="ident">RuleAction</span>, <span class="ident">RuleDiagnostic</span>, <span class="ident">RuleGroup</span>, <span class="ident">RuleMeta</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::services</span>::{<span class="ident">CannotCreateServicesError</span>, <span class="ident">FromServices</span>, <span class="ident">ServiceBag</span>};
 <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::signals::DiagnosticSignal</span>;
