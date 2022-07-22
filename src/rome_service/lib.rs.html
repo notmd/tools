@@ -174,9 +174,31 @@
 <span id="169">169</span>
 <span id="170">170</span>
 <span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
+<span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">rome_console</span>::{<span class="ident">Console</span>, <span class="ident">EnvConsole</span>};
 <span class="kw">use</span> <span class="ident">rome_formatter::FormatError</span>;
 <span class="kw">use</span> <span class="ident">rome_fs</span>::{<span class="ident">FileSystem</span>, <span class="ident">OsFileSystem</span>, <span class="ident">RomePath</span>};
+<span class="kw">use</span> <span class="ident">rome_js_analyze::utils::rename::RenameError</span>;
 <span class="kw">use</span> <span class="ident">std::error::Error</span>;
 <span class="kw">use</span> <span class="ident">std::fmt</span>::{<span class="ident">Debug</span>, <span class="ident">Display</span>, <span class="ident">Formatter</span>};
 <span class="kw">use</span> <span class="ident">std::ops</span>::{<span class="ident">Deref</span>, <span class="ident">DerefMut</span>};
@@ -214,13 +236,14 @@
     <span class="ident">FormatError</span>(<span class="ident">FormatError</span>),
     <span class="doccomment">/// The file could not be formatted since it has syntax errors and `format_with_errors` is disabled</span>
     <span class="ident">FormatWithErrorsDisabled</span>,
-    <span class="doccomment">/// Thrown when a rome can&#39;t read a generic directory</span>
+    <span class="doccomment">/// Thrown when Rome can&#39;t read a generic directory</span>
     <span class="ident">CantReadDirectory</span>(<span class="ident">PathBuf</span>),
-    <span class="doccomment">/// Thrown when a rome can&#39;t read a generic file</span>
+    <span class="doccomment">/// Thrown when Rome can&#39;t read a generic file</span>
     <span class="ident">CantReadFile</span>(<span class="ident">PathBuf</span>),
-
     <span class="doccomment">/// Error thrown when validating the configuration. Once deserialized, further checks have to be done.</span>
     <span class="ident">Configuration</span>(<span class="ident">ConfigurationError</span>),
+    <span class="doccomment">/// Error thrown when Rome cannot rename a symbol.</span>
+    <span class="ident">RenameError</span>(<span class="ident">RenameError</span>),
 }
 
 <span class="kw">impl</span> <span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">RomeError</span> {
@@ -234,6 +257,7 @@
             <span class="ident">RomeError::CantReadFile</span>(<span class="kw">_</span>) =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
             <span class="ident">RomeError::Configuration</span>(<span class="kw">_</span>) =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
             <span class="ident">RomeError::DirtyWorkspace</span> =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
+            <span class="ident">RomeError::RenameError</span>(<span class="kw">_</span>) =&gt; <span class="ident">std::fmt::Display::fmt</span>(<span class="self">self</span>, <span class="ident">f</span>),
         }
     }
 }
@@ -281,6 +305,24 @@
             <span class="ident">RomeError::DirtyWorkspace</span> =&gt; {
                 <span class="macro">write!</span>(<span class="ident">f</span>, <span class="string">&quot;Uncommitted changes in repository&quot;</span>)
             }
+            <span class="ident">RomeError::RenameError</span>(<span class="ident">error</span>) =&gt; <span class="kw">match</span> <span class="ident">error</span> {
+                <span class="ident">RenameError::CannotBeRenamed</span> {
+                    <span class="ident">original_name</span>,
+                    <span class="ident">new_name</span>,
+                } =&gt; {
+                    <span class="macro">write!</span>(
+                        <span class="ident">f</span>,
+                        <span class="string">&quot;encountered an error while renaming the symbol \&quot;{}\&quot; to \&quot;{}\&quot;&quot;</span>,
+                        <span class="ident">original_name</span>, <span class="ident">new_name</span>
+                    )
+                }
+                <span class="ident">RenameError::CannotFindDeclaration</span> =&gt; {
+                    <span class="macro">write!</span>(
+                        <span class="ident">f</span>,
+                        <span class="string">&quot;encountered an error finding a declaration at the specified position&quot;</span>
+                    )
+                }
+            },
         }
     }
 }

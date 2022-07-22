@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["JsAnyRenamableDeclaration",""],["RenameError",""]],"trait":[["RenamableNode",""],["RenameSymbolExtensions",""]]});

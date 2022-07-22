@@ -337,6 +337,37 @@
 <span id="332">332</span>
 <span id="333">333</span>
 <span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">AstNode</span>, <span class="ident">Language</span>, <span class="ident">SyntaxElement</span>, <span class="ident">SyntaxNode</span>, <span class="ident">SyntaxNodeCast</span>, <span class="ident">SyntaxToken</span>};
 <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections::BinaryHeap</span>, <span class="ident">iter::once</span>};
 
@@ -421,6 +452,9 @@
     <span class="ident">L</span>: <span class="ident">Language</span>,
     <span class="ident">N</span>: <span class="ident">AstNode</span><span class="op">&lt;</span><span class="ident">Language</span> <span class="op">=</span> <span class="ident">L</span><span class="op">&gt;</span>,
 {
+    <span class="doccomment">/// Push a change to remove the specified token.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Changes to take effect must be commited.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove_token</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">prev_token</span>: <span class="ident">SyntaxToken</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span>) {
         <span class="kw">let</span> <span class="ident">new_node_slot</span> <span class="op">=</span> <span class="ident">prev_token</span>.<span class="ident">index</span>();
         <span class="kw">let</span> <span class="ident">parent</span> <span class="op">=</span> <span class="ident">prev_token</span>.<span class="ident">parent</span>();
@@ -439,6 +473,9 @@
         });
     }
 
+    <span class="doccomment">/// Push a change to remove the specified node.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Changes to take effect must be commited.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">remove_node</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">prev_node</span>: <span class="ident">T</span>)
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">AstNode</span><span class="op">&lt;</span><span class="ident">Language</span> <span class="op">=</span> <span class="ident">L</span><span class="op">&gt;</span>,
@@ -461,6 +498,31 @@
         });
     }
 
+    <span class="doccomment">/// Push a change to replace the &quot;prev_token&quot; with &quot;next_token&quot;.</span>
+    <span class="doccomment">/// Trivia to be kept must be manually copied to &quot;next_token&quot;.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Changes to take effect must be commited.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">replace_token</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">prev_token</span>: <span class="ident">SyntaxToken</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span>, <span class="ident">next_token</span>: <span class="ident">SyntaxToken</span><span class="op">&lt;</span><span class="ident">L</span><span class="op">&gt;</span>) {
+        <span class="kw">let</span> <span class="ident">new_token_slot</span> <span class="op">=</span> <span class="ident">prev_token</span>.<span class="ident">index</span>();
+        <span class="kw">let</span> <span class="ident">parent</span> <span class="op">=</span> <span class="ident">prev_token</span>.<span class="ident">parent</span>();
+        <span class="kw">let</span> <span class="ident">parent_range</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">u32</span>, <span class="ident">u32</span>)<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">parent</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">range</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">text_range</span>();
+            (<span class="ident">range</span>.<span class="ident">start</span>().<span class="ident">into</span>(), <span class="ident">range</span>.<span class="ident">end</span>().<span class="ident">into</span>())
+        });
+        <span class="kw">let</span> <span class="ident">parent_depth</span> <span class="op">=</span> <span class="ident">parent</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">p</span><span class="op">|</span> <span class="ident">p</span>.<span class="ident">ancestors</span>().<span class="ident">count</span>()).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+
+        <span class="self">self</span>.<span class="ident">changes</span>.<span class="ident">push</span>(<span class="ident">CommitChange</span> {
+            <span class="ident">parent_depth</span>,
+            <span class="ident">parent</span>,
+            <span class="ident">parent_range</span>,
+            <span class="ident">new_node_slot</span>: <span class="ident">new_token_slot</span>,
+            <span class="ident">new_node</span>: <span class="prelude-val">Some</span>(<span class="ident">SyntaxElement::Token</span>(<span class="ident">next_token</span>)),
+        });
+    }
+
+    <span class="doccomment">/// Push a change to replace the &quot;prev_node&quot; with &quot;next_node&quot;.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Changes to take effect must be commited.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">replace_node</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="ident">prev_node</span>: <span class="ident">T</span>, <span class="ident">next_node</span>: <span class="ident">T</span>)
     <span class="kw">where</span>
         <span class="ident">T</span>: <span class="ident">AstNode</span><span class="op">&lt;</span><span class="ident">Language</span> <span class="op">=</span> <span class="ident">L</span><span class="op">&gt;</span>,
