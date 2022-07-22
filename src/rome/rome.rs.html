@@ -31,7 +31,19 @@
 <span id="26">26</span>
 <span id="27">27</span>
 <span id="28">28</span>
-</pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">rome_cli</span>::{<span class="ident">run_cli</span>, <span class="ident">setup_panic_handler</span>, <span class="ident">CliSession</span>, <span class="ident">Termination</span>};
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+</pre><pre class="rust"><code><span class="doccomment">//! This is the main binary of Rome.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! If you&#39;re curios about how to use it, check Rome&#39;s [website]</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! [website]: https://rome.tools</span>
+
+<span class="kw">use</span> <span class="ident">rome_cli</span>::{<span class="ident">run_cli</span>, <span class="ident">setup_panic_handler</span>, <span class="ident">CliSession</span>, <span class="ident">Termination</span>};
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">target_os</span> <span class="op">=</span> <span class="string">&quot;windows&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">global_allocator</span>]</span>

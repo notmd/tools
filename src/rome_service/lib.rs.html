@@ -195,6 +195,9 @@
 <span id="190">190</span>
 <span id="191">191</span>
 <span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
+<span id="195">195</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">rome_console</span>::{<span class="ident">Console</span>, <span class="ident">EnvConsole</span>};
 <span class="kw">use</span> <span class="ident">rome_formatter::FormatError</span>;
 <span class="kw">use</span> <span class="ident">rome_fs</span>::{<span class="ident">FileSystem</span>, <span class="ident">OsFileSystem</span>, <span class="ident">RomePath</span>};
@@ -216,11 +219,15 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::file_handlers::JsFormatSettings</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident"><span class="kw">crate</span>::workspace::Workspace</span>;
 
+<span class="doccomment">/// This is the main entrypoint of the application.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">App</span><span class="op">&lt;</span><span class="lifetime">&#39;app</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// A reference to the internal virtual file system</span>
     <span class="kw">pub</span> <span class="ident">fs</span>: <span class="ident">DynRef</span><span class="op">&lt;</span><span class="lifetime">&#39;app</span>, <span class="kw">dyn</span> <span class="ident">FileSystem</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// A reference to the internal workspace</span>
     <span class="kw">pub</span> <span class="ident">workspace</span>: <span class="ident">DynRef</span><span class="op">&lt;</span><span class="lifetime">&#39;app</span>, <span class="kw">dyn</span> <span class="ident">Workspace</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// A reference to the internal console, where its buffer will be used to write messages and</span>
+    <span class="doccomment">/// errors</span>
     <span class="kw">pub</span> <span class="ident">console</span>: <span class="ident">DynRef</span><span class="op">&lt;</span><span class="lifetime">&#39;app</span>, <span class="kw">dyn</span> <span class="ident">Console</span><span class="op">&gt;</span>,
-    <span class="kw">pub</span> <span class="ident">config_path</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">RomePath</span><span class="op">&gt;</span>,
 }
 
 <span class="doccomment">/// Generic errors thrown during rome operations</span>
@@ -355,7 +362,6 @@
             <span class="ident">fs</span>,
             <span class="ident">console</span>,
             <span class="ident">workspace</span>: <span class="ident">DynRef::Owned</span>(<span class="ident">workspace::server</span>()),
-            <span class="ident">config_path</span>: <span class="prelude-val">None</span>,
         }
     }
 }
